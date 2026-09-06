@@ -1,0 +1,127 @@
+Category 1: Urban & Civic Analytics (The Core GIS Heavyweights)
+These projects prove you can handle standard municipal data but elevate it far beyond a typical government portal.
+
+1. The 15-Minute City Hex-Grid
+
+The Concept: A map evaluating how accessible groceries, parks, and transit are within a 15-minute walk from any point in the city.
+
+The Data: OpenStreetMap (OSM) via the Overpass API for amenities, and municipal GeoJSON for street networks.
+
+The UX Hook: Instead of messy points, aggregate the data into a sleek, glowing 3D hex-grid (using deck.gl) that users can hover over to see walkability scores.
+
+2. Historical Redlining vs. Modern Heat Islands
+
+The Concept: Visualizing the lasting environmental impact of 1930s housing policies on today's neighborhood temperatures.
+
+The Data: HOLC shapefiles (University of Richmond’s Mapping Inequality project) and Landsat satellite surface temperature data.
+
+The UX Hook: A smooth split-screen slider allowing users to drag back and forth between historical parchment-style maps and modern thermal data.
+
+3. The Gentrification & Building Lifecycle Timeline
+
+The Concept: An interactive map showing the age and evolution of building footprints to visualize urban density over time.
+
+The Data: "Building Footprints" datasets (usually rich GeoJSON or Shapefiles on city open data portals) containing year_built attributes.
+
+The UX Hook: A timeline slider at the bottom. As the user drags it, buildings animate and extrude into 3D existence, color-coded by zoning type.
+
+4. Noise Pollution 3D Topography
+
+The Concept: Mapping a city's 311 noise complaints as a topographic mountain range rather than a flat heatmap.
+
+The Data: Municipal 311 service request API endpoints (filtering for noise/party/construction complaints).
+
+The UX Hook: Render the density of complaints as smooth, stylized 3D elevation peaks. The louder the area, the higher the "mountain."
+
+5. Real-Time Transit Isochrones
+
+The Concept: A map where the user clicks anywhere, and a fluid, animated blob expands to show exactly how far they can travel on public transit within 30 minutes.
+
+The Data: Real-time GTFS (General Transit Feed Specification) data and routing APIs.
+
+The UX Hook: Micro-interactions. The transit polygon should pulse gently, with smooth easing animations as the user changes the time slider from 15 to 45 minutes.
+
+Category 2: Aesthetic & Experimental (Flexing the Design Background)
+These ideas merge custom graphic design styles with spatial data, proving you know how to manipulate the absolute core of map styling engines.
+
+6. Synthwave Night-Time Transit Tracker
+
+The Concept: A live map of public transit vehicles moving across the city, styled entirely in an 80s retro-futuristic aesthetic.
+
+The Data: Live GTFS-realtime vehicle position feeds.
+
+The UX Hook: Deep dark backgrounds, glowing neon pink and cyan vector lines for routes, and custom MapLibre JSON styling to completely overhaul the basemap.
+
+7. 16-Bit Pixel Art Neighborhood Renderer
+
+The Concept: A hyper-stylized map that renders standard city blocks to look like an old-school top-down RPG.
+
+The Data: Standard OpenStreetMap vector tiles.
+
+The UX Hook: Strip back all traditional map rendering and use custom icons, blocky fonts, and pixelated texture fills for water, grass, and concrete.
+
+8. Hex-Based Resource Mapping
+
+The Concept: Visualize a city's power grid, water lines, or internet infrastructure by aggregating the data into discrete hexes. Style it heavily like a modern strategy game (think Civilization VI), where hexes represent resource density.
+
+The Data: Municipal infrastructure line data (GeoJSON) and Turf.js to calculate intersections within the hexes.
+
+The UX Hook: High contrast, gamified UI panels, and 3D extrusion based on "resource yield" (infrastructure density).
+
+9. Fictional City Procedural Generator
+
+The Concept: Build a world-building tool that uses spatial algorithms to generate fictional street networks and zoning districts over real topography.
+
+The Data: Real digital elevation models (DEM) combined with Turf.js for procedural geometry generation.
+
+The UX Hook: Allow users to export the resulting hybrid city maps as GeoJSON files, complete with auto-generated names for distinct municipal wards.
+
+10. Cinematic "Scrollytelling" StoryMap
+
+The Concept: A scroll-driven narrative map (similar to The New York Times graphics desk) detailing a specific local crisis, like a severe storm's path or a housing shortage.
+
+The Data: Historical weather paths or census tract housing data.
+
+The UX Hook: As the user scrolls down the webpage text, the map pinned in the background automatically flies to new coordinates, zooms, and changes data layers smoothly.
+
+Category 3: Environmental & Ecological
+11. Wildfire Smoke & Wind Particle Flow
+
+The Concept: A living map showing real-time wind patterns carrying wildfire smoke or urban pollution.
+
+The Data: NOAA weather APIs, EPA Air Quality Index (AQI) sensor data.
+
+The UX Hook: Using WebGL to render thousands of moving, fading wind particles flowing across a minimalist, monochromatic basemap.
+
+12. Coastal Flood Risk Simulator
+
+The Concept: An interactive tool to visualize which properties go underwater as sea levels rise.
+
+The Data: High-resolution coastal DEM (elevation) data and municipal property boundary polygons.
+
+The UX Hook: A menacing, fluid blue overlay that rises and covers property parcels as the user drags a "Water Level" slider up.
+
+13. Urban Tree Canopy Network
+
+The Concept: Mapping the exact species, health, and location of every registered tree in a city to highlight ecological equity.
+
+The Data: City Parks & Recreation "Tree Inventory" CSVs/APIs.
+
+The UX Hook: Style the data points less like dots and more like a glowing, interconnected biological network, using color gradients to represent tree age or canopy size.
+
+Category 4: Infrastructure & Human Flow
+14. Broadband Access & Digital Redlining
+
+The Concept: Visualizing the layout of fiber optic internet lines against household income to show disparities in digital access.
+
+The Data: FCC broadband mapping data and US Census demographic APIs.
+
+The UX Hook: A stark, high-contrast map where the underlying network infrastructure pulses like a circuit board, contrasting sharply with data deserts.
+
+15. Maritime Shipping & Supply Chain Arcs
+
+The Concept: A global or regional map showing the volume and flow of cargo ships between ports.
+
+The Data: AIS (Automatic Identification System) vessel tracking data (historical or live).
+
+The UX Hook: A 3D globe (using MapLibre's globe projection) with glowing Sankey-style arcs leaping across oceans, visually weighted by the tonnage of cargo.
