@@ -98,9 +98,9 @@ Non-negotiable aesthetic targets:
 | # | Phase | Status |
 |---|---|---|
 | 0 | Scaffold Vite + React-TS, install maplibre-gl / deck.gl / turf | ✅ Done |
-| 1 | Purge boilerplate, full-screen dark MapLibre basemap w/ MapTiler key in `.env` | ▶ Next |
-| 2 | Fetch OSM amenities via Overpass, save static GeoJSON to `/public/data` | ⬜ |
-| 3 | Render raw amenity points with a deck.gl ScatterplotLayer (sanity check the data) | ⬜ |
+| 1 | Purge boilerplate, full-screen dark MapLibre basemap w/ MapTiler key in `.env` | ✅ Done |
+| 2 | Fetch OSM amenities via Overpass, save static GeoJSON to `/public/data` | ✅ Done |
+| 3 | Render raw amenity points with a deck.gl ScatterplotLayer (sanity check the data) | ▶ Next |
 | 4 | Swap to `HexagonLayer` — 3D extruded hex aggregation | ⬜ |
 | 5 | Scoring logic — combine grocery/park/transit counts within 1200m into one 0–100 score | ⬜ |
 | 6 | Color ramp + elevation driven by score; art-direct the glow | ⬜ |
