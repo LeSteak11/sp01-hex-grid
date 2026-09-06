@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Map as MapLibreMap } from 'maplibre-gl';
-import { MapLibreOverlay, ScatterplotLayer } from 'deck.gl';
+import { MapLibreOverlay, HexagonLayer } from 'deck.gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
@@ -16,11 +16,14 @@ type Amenity = {
 
 const CATEGORIES: Category[] = ['grocery', 'park', 'transit'];
 
-const COLORS: Record<Category, [number, number, number]> = {
-  grocery: [255, 184, 76],
-  park: [80, 250, 180],
-  transit: [120, 160, 255],
-};
+const COLOR_RANGE: [number, number, number][] = [
+  [38, 22, 74],
+  [68, 40, 130],
+  [104, 62, 178],
+  [126, 106, 218],
+  [110, 176, 232],
+  [103, 232, 249],
+];
 
 async function loadAmenities(): Promise<Amenity[]> {
   const groups = await Promise.all(
@@ -55,7 +58,7 @@ export default function MapView() {
       zoom: 11.5,
       pitch: 45,
       bearing: -17.6,
-      antialias: true,
+      canvasContextAttributes: { antialias: true },
     });
 
     const overlay = new MapLibreOverlay({ layers: [] });
@@ -80,15 +83,22 @@ export default function MapView() {
 
     overlayRef.current.setProps({
       layers: [
-        new ScatterplotLayer<Amenity>({
-          id: 'amenities',
+        new HexagonLayer<Amenity>({
+          id: 'hexes',
           data: amenities,
           getPosition: (d) => d.position,
-          getFillColor: (d) => COLORS[d.category],
-          getRadius: 40,
-          radiusMinPixels: 1.5,
-          radiusMaxPixels: 6,
-          opacity: 0.85,
+          radius: 200,
+          coverage: 0.88,
+          extruded: true,
+          elevationScale: 1,
+          elevationRange: [0, 900],
+          colorRange: COLOR_RANGE,
+          colorScaleType: 'quantile',
+          upperPercentile: 99,
+          elevationUpperPercentile: 99,
+          opacity: 0.75,
+          material: false,
+          pickable: true,
         }),
       ],
     });
