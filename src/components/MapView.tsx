@@ -6,14 +6,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
 
-type Category = 'grocery' | 'park' | 'transit';
-
-type Amenity = {
-  position: [number, number];
-  category: Category;
-  name: string | null;
-};
-
+import type { Amenity, Category } from '../types';
+import { scoreBin } from '../lib/score';
 const CATEGORIES: Category[] = ['grocery', 'park', 'transit'];
 
 const COLOR_RANGE: [number, number, number][] = [
@@ -93,9 +87,10 @@ export default function MapView() {
           elevationScale: 1,
           elevationRange: [0, 900],
           colorRange: COLOR_RANGE,
-          colorScaleType: 'quantile',
-          upperPercentile: 99,
-          elevationUpperPercentile: 99,
+          getColorValue: (points) => scoreBin(points),
+          getElevationValue: (points) => scoreBin(points),
+          colorDomain: [0, 100],
+          elevationDomain: [0, 100],
           opacity: 0.75,
           material: false,
           pickable: true,
