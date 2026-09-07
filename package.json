@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "fetch:data": "node scripts/fetch-osm.mjs",
+    "fetch:boundary": "node scripts/fetch-boundary.mjs",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

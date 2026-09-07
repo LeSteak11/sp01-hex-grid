@@ -47,9 +47,7 @@ A map of **San Francisco** that scores how accessible **groceries, parks, and tr
 **Explicitly out of scope** (the Later list): network-based isochrones, real-time transit, multi-city support, user accounts, mobile-native app.
 
 **Later list (deferred, revisit before ship):**
-- Clip the grid to the SF city boundary — the bbox is a rectangle, so Marin and bay cells currently render
-- Elevation reads nearly flat at default zoom; either commit harder to height or reconsider extrusion
-- Basemap labels (Daly City, Brisbane) compete with the data for attention — dim them in the MapLibre style
+- Land-only clipping — the county boundary legally includes bay/ocean water, so some offshore cells remain; needs a coastline dataset
 - Add rail/tram/ferry to the transit category; currently bus stops only
 
 ---
@@ -109,9 +107,10 @@ Non-negotiable aesthetic targets:
 | 3 | Render raw amenity points with a deck.gl ScatterplotLayer (sanity check the data) | ✅ Done |
 | 4 | Swap to `HexagonLayer` — 3D extruded hex aggregation | ✅ Done |
 | 5 | Scoring logic — combine grocery/park/transit counts within 1200m into one 0–100 score | ✅ Done |
-| 6 | Color ramp + elevation driven by score; art-direct the glow | ▶ Next |
-| 7 | Interaction — hover tooltip, category toggles, legend, radius slider | ⬜ |
-| 8 | Polish + performance + deploy free + write the case study | ⬜ |
+| 6 | Color ramp + elevation driven by score; art-direct the glow | ✅ Done |
+| 7 | Clip grid to SF county boundary (OSM rel 111968), dim basemap labels | ✅ Done |
+| 8 | Interaction — hover tooltip, legend, category toggles | ▶ Next |
+| 9 | Polish + performance + deploy free + write the case study | ⬜ |
 
 ---
 

@@ -1,4 +1,5 @@
-import { hexGrid } from '@turf/turf';
+import { hexGrid, booleanPointInPolygon, point } from '@turf/turf';
+import type { Feature, MultiPolygon } from 'geojson';
 import type { Amenity } from '../types';
 import { scoreCounts, type Counts } from './score';
 
@@ -16,7 +17,10 @@ export type HexCell = {
   score: number;
 };
 
-export function buildGrid(amenities: Amenity[]): HexCell[] {
+export function buildGrid(
+  amenities: Amenity[],
+  boundary: Feature<MultiPolygon>
+): HexCell[] {
   const grid = hexGrid(BBOX, CELL_SIDE_KM, { units: 'kilometers' });
 
   const points = amenities.map((a) => ({
@@ -39,6 +43,8 @@ export function buildGrid(amenities: Amenity[]): HexCell[] {
     }
     lon /= 6;
     lat /= 6;
+
+    if (!booleanPointInPolygon(point([lon, lat]), boundary)) continue;
 
     const cx = lon * LON_TO_M;
     const cy = lat * LAT_TO_M;

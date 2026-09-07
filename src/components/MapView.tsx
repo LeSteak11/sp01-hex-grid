@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Map as MapLibreMap } from 'maplibre-gl';
 import { MapLibreOverlay, ColumnLayer } from 'deck.gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Feature, MultiPolygon } from 'geojson';
 import type { Amenity, Category } from '../types';
 import { buildGrid, type HexCell } from '../lib/grid';
 
@@ -49,6 +50,7 @@ export default function MapView() {
   const mapRef = useRef<MapLibreMap | null>(null);
   const overlayRef = useRef<MapLibreOverlay | null>(null);
   const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const [boundary, setBoundary] = useState<Feature<MultiPolygon> | null>(null);
   const [cells, setCells] = useState<HexCell[]>([]);
 
   useEffect(() => {
@@ -66,6 +68,7 @@ export default function MapView() {
 
     const overlay = new MapLibreOverlay({ layers: [] });
     map.addControl(overlay);
+
     map.on('load', () => {
       for (const layer of map.getStyle().layers) {
         if (layer.type !== 'symbol') continue;
@@ -93,10 +96,17 @@ export default function MapView() {
   }, []);
 
   useEffect(() => {
-    if (amenities.length === 0) return;
+    fetch('/data/boundary.geojson')
+      .then((r) => r.json())
+      .then(setBoundary)
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (amenities.length === 0 || !boundary) return;
 
     const t = performance.now();
-    const built = buildGrid(amenities);
+    const built = buildGrid(amenities, boundary);
     const scores = built.map((c) => c.score);
     const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
 
@@ -109,7 +119,7 @@ export default function MapView() {
     );
 
     setCells(built);
-  }, [amenities]);
+  }, [amenities, boundary]);
 
   useEffect(() => {
     if (!overlayRef.current || cells.length === 0) return;
