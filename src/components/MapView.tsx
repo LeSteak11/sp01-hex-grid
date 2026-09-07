@@ -10,6 +10,7 @@ import Tooltip from './Tooltip';
 import Legend from './Legend';
 import Header from './Header';
 import About from './About';
+import Loader from './Loader';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
@@ -182,6 +183,7 @@ export default function MapView() {
       <Legend />
       <About />
       <Tooltip cell={hover.cell} x={hover.x} y={hover.y} />
+      <Loader done={cells.length > 0} />
     </>
   );
 }
