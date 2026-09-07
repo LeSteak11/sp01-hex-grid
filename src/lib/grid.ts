@@ -14,6 +14,7 @@ const LON_TO_M = Math.cos((ORIGIN_LAT * Math.PI) / 180) * 111320;
 export type HexCell = {
   position: [number, number];
   counts: Counts;
+  parkArea: number;
   score: number;
 };
 
@@ -27,6 +28,7 @@ export function buildGrid(
     x: a.position[0] * LON_TO_M,
     y: a.position[1] * LAT_TO_M,
     category: a.category,
+    area: a.area,
   }));
 
   const radiusSq = RADIUS_M * RADIUS_M;
@@ -50,6 +52,7 @@ export function buildGrid(
     const cy = lat * LAT_TO_M;
 
     const counts: Counts = { grocery: 0, park: 0, transit: 0 };
+    let parkArea = 0;
     let found = false;
 
     for (const p of points) {
@@ -58,13 +61,19 @@ export function buildGrid(
 
       if (dx * dx + dy * dy <= radiusSq) {
         counts[p.category]++;
+        parkArea += p.area;
         found = true;
       }
     }
 
     if (!found) continue;
 
-    cells.push({ position: [lon, lat], counts, score: scoreCounts(counts) });
+    cells.push({
+      position: [lon, lat],
+      counts,
+      parkArea,
+      score: scoreCounts(counts, parkArea),
+    });
   }
 
   return cells;

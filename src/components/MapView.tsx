@@ -38,6 +38,7 @@ async function loadAmenities(): Promise<Amenity[]> {
         position: f.geometry.coordinates as [number, number],
         category,
         name: f.properties.name,
+        area: f.properties.area ?? 0,
       }));
     })
   );

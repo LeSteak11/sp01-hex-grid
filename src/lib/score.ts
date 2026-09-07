@@ -2,19 +2,18 @@ import type { Category } from '../types';
 
 export type Counts = Record<Category, number>;
 
-const SATURATION: Record<Category, number> = {
-  grocery: 40,
-  park: 20,
+const SATURATION = {
+  grocery: 20,
+  parkArea: 2_000_000,
   transit: 130,
 };
 
-export function scoreCounts(counts: Counts): number {
-  const categories = Object.keys(SATURATION) as Category[];
+export function scoreCounts(counts: Counts, parkArea: number): number {
+  const parts = [
+    Math.min(counts.grocery / SATURATION.grocery, 1),
+    Math.min(parkArea / SATURATION.parkArea, 1),
+    Math.min(counts.transit / SATURATION.transit, 1),
+  ];
 
-  let total = 0;
-  for (const category of categories) {
-    total += Math.min(counts[category] / SATURATION[category], 1);
-  }
-
-  return (total / categories.length) * 100;
+  return (parts.reduce((a, b) => a + b, 0) / parts.length) * 100;
 }
