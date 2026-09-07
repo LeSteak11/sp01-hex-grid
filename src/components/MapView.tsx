@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Map as MapLibreMap } from 'maplibre-gl';
-import { MapLibreOverlay, HexagonLayer } from 'deck.gl';
+import { MapLibreOverlay, ColumnLayer } from 'deck.gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Amenity, Category } from '../types';
+import { buildGrid, type HexCell } from '../lib/grid';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
 
-import type { Amenity, Category } from '../types';
-import { scoreBin } from '../lib/score';
 const CATEGORIES: Category[] = ['grocery', 'park', 'transit'];
 
 const COLOR_RANGE: [number, number, number][] = [
@@ -18,6 +18,14 @@ const COLOR_RANGE: [number, number, number][] = [
   [110, 176, 232],
   [103, 232, 249],
 ];
+
+function colorForScore(score: number): [number, number, number] {
+  const i = Math.min(
+    COLOR_RANGE.length - 1,
+    Math.floor((score / 100) * COLOR_RANGE.length)
+  );
+  return COLOR_RANGE[i];
+}
 
 async function loadAmenities(): Promise<Amenity[]> {
   const groups = await Promise.all(
@@ -41,6 +49,7 @@ export default function MapView() {
   const mapRef = useRef<MapLibreMap | null>(null);
   const overlayRef = useRef<MapLibreOverlay | null>(null);
   const [amenities, setAmenities] = useState<Amenity[]>([]);
+  const [cells, setCells] = useState<HexCell[]>([]);
 
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return;
@@ -73,31 +82,47 @@ export default function MapView() {
   }, []);
 
   useEffect(() => {
-    if (!overlayRef.current || amenities.length === 0) return;
+    if (amenities.length === 0) return;
+
+    const t = performance.now();
+    const built = buildGrid(amenities);
+    const scores = built.map((c) => c.score);
+    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+    console.log(
+      `cells: ${built.length}`,
+      `| ${Math.round(performance.now() - t)}ms`,
+      `| min ${Math.min(...scores).toFixed(1)}`,
+      `| max ${Math.max(...scores).toFixed(1)}`,
+      `| mean ${mean.toFixed(1)}`
+    );
+
+    setCells(built);
+  }, [amenities]);
+
+  useEffect(() => {
+    if (!overlayRef.current || cells.length === 0) return;
 
     overlayRef.current.setProps({
       layers: [
-        new HexagonLayer<Amenity>({
+        new ColumnLayer<HexCell>({
           id: 'hexes',
-          data: amenities,
-          getPosition: (d) => d.position,
+          data: cells,
+          diskResolution: 6,
           radius: 200,
+          angle: 90,
           coverage: 0.88,
           extruded: true,
-          elevationScale: 1,
-          elevationRange: [0, 900],
-          colorRange: COLOR_RANGE,
-          getColorValue: (points) => scoreBin(points),
-          getElevationValue: (points) => scoreBin(points),
-          colorDomain: [0, 100],
-          elevationDomain: [0, 100],
-          opacity: 0.75,
+          getPosition: (d) => d.position,
+          getFillColor: (d) => colorForScore(d.score),
+          getElevation: (d) => d.score * 9,
+          opacity: 0.8,
           material: false,
           pickable: true,
         }),
       ],
     });
-  }, [amenities]);
+  }, [cells]);
 
   return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
 }

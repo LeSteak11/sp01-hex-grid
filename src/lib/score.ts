@@ -1,18 +1,14 @@
-import type { Amenity, Category } from '../types';
+import type { Category } from '../types';
+
+export type Counts = Record<Category, number>;
 
 const SATURATION: Record<Category, number> = {
-  grocery: 3,
-  park: 4,
-  transit: 12,
+  grocery: 40,
+  park: 20,
+  transit: 130,
 };
 
-export function scoreBin(points: Amenity[]): number {
-  const counts: Record<Category, number> = { grocery: 0, park: 0, transit: 0 };
-
-  for (const p of points) {
-    counts[p.category]++;
-  }
-
+export function scoreCounts(counts: Counts): number {
   const categories = Object.keys(SATURATION) as Category[];
 
   let total = 0;
