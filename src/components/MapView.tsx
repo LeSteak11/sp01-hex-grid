@@ -6,28 +6,13 @@ import type { Feature, MultiPolygon } from 'geojson';
 import type { Amenity, Category } from '../types';
 import { buildGrid, type HexCell } from '../lib/grid';
 import Tooltip from './Tooltip';
+import { colorForScore } from '../lib/color';
+import Legend from './Legend';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
 
 const CATEGORIES: Category[] = ['grocery', 'park', 'transit'];
-
-const COLOR_RANGE: [number, number, number][] = [
-  [38, 22, 74],
-  [68, 40, 130],
-  [104, 62, 178],
-  [126, 106, 218],
-  [110, 176, 232],
-  [103, 232, 249],
-];
-
-function colorForScore(score: number): [number, number, number] {
-  const i = Math.min(
-    COLOR_RANGE.length - 1,
-    Math.floor((score / 100) * COLOR_RANGE.length)
-  );
-  return COLOR_RANGE[i];
-}
 
 async function loadAmenities(): Promise<Amenity[]> {
   const groups = await Promise.all(
@@ -159,9 +144,10 @@ export default function MapView() {
     });
   }, [cells]);
 
-    return (
+  return (
     <>
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <Legend />
       <Tooltip cell={hover.cell} x={hover.x} y={hover.y} />
     </>
   );
