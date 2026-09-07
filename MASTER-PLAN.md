@@ -48,7 +48,6 @@ A map of **San Francisco** that scores how accessible **groceries, parks, and tr
 
 **Later list (deferred, revisit before ship):**
 - Land-only clipping — the county boundary legally includes bay/ocean water, so some offshore cells remain; needs a coastline dataset
-- Add rail/tram/ferry to the transit category; currently bus stops only
 
 ---
 
@@ -109,8 +108,9 @@ Non-negotiable aesthetic targets:
 | 5 | Scoring logic — combine grocery/park/transit counts within 1200m into one 0–100 score | ✅ Done |
 | 6 | Color ramp + elevation driven by score; art-direct the glow | ✅ Done |
 | 7 | Clip grid to SF county boundary (OSM rel 111968), dim basemap labels | ✅ Done |
-| 8 | Interaction — hover tooltip, legend, category toggles | ▶ Next |
-| 9 | Polish + performance + deploy free + write the case study | ⬜ |
+| 8 | Data quality — park scored by area, transit expanded, caps recalibrated | ✅ Done |
+| 9 | Interaction — hover tooltip, legend, category toggles | ▶ Next |
+| 10+ | Polish + performance + deploy free + write the case study — see `PLAN-V2.md` | ⬜ |
 
 ---
 
@@ -119,16 +119,18 @@ Non-negotiable aesthetic targets:
 For each hex centroid, count amenities within **1200m**, by category:
 
 - **Groceries** — OSM `shop=supermarket`, `shop=grocery`, `shop=convenience` (476 points)
-- **Parks** — OSM `leisure=park`, `leisure=garden` (2,044 points)
-- **Transit** — OSM `highway=bus_stop` (3,375 points)
+- **Parks** — OSM `leisure=park`, `leisure=garden`, scored by **polygon area in m²**, not feature count (1,995 features / 1,921 with geometry / 14.7 km² total)
+- **Transit** — OSM `highway=bus_stop`, `railway=station|tram_stop|halt`, `station=subway`, `amenity=ferry_terminal` (3,766 points)
 
 Each category count is divided by a fixed **saturation cap**, clamped to 0–1, then averaged with equal weight and scaled to 0–100.
 
-**Calibrated caps (locked):** grocery 20, park 40, transit 130.
+**Calibrated caps (locked, Phase 8):** grocery 20, park area 400,000 m², transit 145.
 
 Saturation caps replaced the original 90th-percentile plan. Percentile normalization is *relative* — it scores a hex against the rest of the bounding box, so results shift if the box changes and cross-city comparison is meaningless. Fixed caps are *absolute* and encode diminishing returns: your third grocery within walking distance matters, your twentieth does not. Same logic Walk Score uses.
 
-Caps were calibrated against the real distribution (1,827 cells): grocery p50=5 p90=32, park p50=12 p90=70, transit p50=78 p90=164. Chosen set yields mean 45, spread 2–97, with 9% of cells maxed.
+Recalibrated in Phase 8 after parks moved from count to area. Distribution across 1,630 cells: grocery p50=6 p90=35, parkArea p50=138,329 p90=632,887, transit p50=102 p90=183. Caps set at ~0.6× each p90, matching the ratio of the original calibration. Result: mean 47.6, spread 0–100, 1.7% maxed.
+
+Prior calibration, for reference (1,827 cells, park as count): grocery p50=5 p90=32, park p50=12 p90=70, transit p50=78 p90=164; caps 20/40/130 yielded mean 45, spread 2–97, 9% maxed.
 
 Implementation lives in `src/lib/grid.ts` (equirectangular projection to local meters, squared-distance radius test, overlapping neighborhoods) and `src/lib/score.ts` (caps + averaging). Rendered with `ColumnLayer`, not `HexagonLayer` — the grid is computed in app code, not by deck.gl.
 

@@ -5,6 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Feature, MultiPolygon } from 'geojson';
 import type { Amenity, Category } from '../types';
 import { buildGrid, type HexCell } from '../lib/grid';
+import Tooltip from './Tooltip';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
@@ -53,6 +54,11 @@ export default function MapView() {
   const [amenities, setAmenities] = useState<Amenity[]>([]);
   const [boundary, setBoundary] = useState<Feature<MultiPolygon> | null>(null);
   const [cells, setCells] = useState<HexCell[]>([]);
+    const [hover, setHover] = useState<{ cell: HexCell | null; x: number; y: number }>({
+    cell: null,
+    x: 0,
+    y: 0,
+  });
 
   useEffect(() => {
     if (mapRef.current || !containerRef.current) return;
@@ -141,10 +147,22 @@ export default function MapView() {
           opacity: 0.92,
           material: false,
           pickable: true,
+          onHover: (info) => {
+            setHover({
+              cell: (info.object as HexCell) ?? null,
+              x: info.x,
+              y: info.y,
+            });
+          },
         }),
       ],
     });
   }, [cells]);
 
-  return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
+    return (
+    <>
+      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <Tooltip cell={hover.cell} x={hover.x} y={hover.y} />
+    </>
+  );
 }
