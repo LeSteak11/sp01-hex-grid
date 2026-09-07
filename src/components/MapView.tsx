@@ -163,6 +163,13 @@ export default function MapView() {
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 60],
+          onClick: (info) => {
+            setHover({
+              cell: (info.object as HexCell) ?? null,
+              x: info.x,
+              y: info.y,
+            });
+          },
           updateTriggers: { getElevation: progress },
           onHover: (info) => {
             setHover({
@@ -182,7 +189,12 @@ export default function MapView() {
       <Header />
       <Legend />
       <About />
-      <Tooltip cell={hover.cell} x={hover.x} y={hover.y} />
+      <Tooltip
+        cell={hover.cell}
+        x={hover.x}
+        y={hover.y}
+        onClose={() => setHover({ cell: null, x: 0, y: 0 })}
+        />
       <Loader done={cells.length > 0} />
     </>
   );

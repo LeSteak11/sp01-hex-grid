@@ -1,31 +1,38 @@
 import type { HexCell } from '../lib/grid';
+import { useNarrow } from '../hooks/useNarrow';
 
 type Props = {
   cell: HexCell | null;
   x: number;
   y: number;
+  onClose: () => void;
 };
 
 const EDGE_PAD = 16;
 const CARD_W = 200;
 
-export default function Tooltip({ cell, x, y }: Props) {
+export default function Tooltip({ cell, x, y, onClose }: Props) {
+  const narrow = useNarrow();
   const flip = x + CARD_W + EDGE_PAD * 2 > window.innerWidth;
 
   return (
     <div
-      style={{
+     style={{
         position: 'fixed',
-        left: x,
-        top: y,
-        transform: `translate(${flip ? `calc(-100% - ${EDGE_PAD}px)` : `${EDGE_PAD}px`}, -50%)`,
-        width: CARD_W,
+        left: narrow ? 16 : x,
+        right: narrow ? 16 : undefined,
+        top: narrow ? undefined : y,
+        bottom: narrow ? 16 : undefined,
+        transform: narrow
+          ? undefined
+          : `translate(${flip ? `calc(-100% - ${EDGE_PAD}px)` : `${EDGE_PAD}px`}, -50%)`,
+        width: narrow ? undefined : CARD_W,
         padding: '12px 14px',
         background: 'rgba(12, 13, 18, 0.92)',
         border: '1px solid rgba(255, 255, 255, 0.09)',
         borderRadius: 8,
         color: '#e8e9ee',
-        pointerEvents: 'none',
+        pointerEvents: narrow ? 'auto' : 'none',
         opacity: cell ? 1 : 0,
         transition: 'opacity 180ms ease',
         zIndex: 10,
@@ -46,6 +53,26 @@ export default function Tooltip({ cell, x, y }: Props) {
           </div>
         </>
       )}
+                {narrow && (
+            <button
+              onClick={onClose}
+              style={{
+                marginTop: 12,
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                color: 'inherit',
+                opacity: 0.4,
+                font: 'inherit',
+                fontSize: 10,
+                letterSpacing: '0.09em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+              }}
+            >
+              Close
+            </button>
+          )}
     </div>
   );
 }
