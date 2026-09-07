@@ -67,10 +67,10 @@ export default function MapView() {
     const map = new MapLibreMap({
       container: containerRef.current,
       style: STYLE,
-      center: [-122.4194, 37.7749],
-      zoom: 11.5,
-      pitch: 52,
-      bearing: -17.6,
+      center: [-122.443, 37.788],
+      zoom: 11.75,
+      pitch: 55,
+      bearing: -22,
       canvasContextAttributes: { antialias: true },
     });
 
@@ -160,6 +160,8 @@ export default function MapView() {
           opacity: 0.92,
           material: false,
           pickable: true,
+          autoHighlight: true,
+          highlightColor: [255, 255, 255, 60],
           updateTriggers: { getElevation: progress },
           onHover: (info) => {
             setHover({
