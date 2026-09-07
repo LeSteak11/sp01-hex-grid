@@ -59,13 +59,24 @@ export default function MapView() {
       style: STYLE,
       center: [-122.4194, 37.7749],
       zoom: 11.5,
-      pitch: 45,
+      pitch: 52,
       bearing: -17.6,
       canvasContextAttributes: { antialias: true },
     });
 
     const overlay = new MapLibreOverlay({ layers: [] });
     map.addControl(overlay);
+    map.on('load', () => {
+      for (const layer of map.getStyle().layers) {
+        if (layer.type !== 'symbol') continue;
+        try {
+          map.setPaintProperty(layer.id, 'text-opacity', 0.32);
+          map.setPaintProperty(layer.id, 'icon-opacity', 0.2);
+        } catch {
+          // layer has no text/icon paint props
+        }
+      }
+    });
 
     mapRef.current = map;
     overlayRef.current = overlay;
@@ -111,12 +122,12 @@ export default function MapView() {
           diskResolution: 6,
           radius: 200,
           angle: 90,
-          coverage: 0.88,
+          coverage: 0.82,
           extruded: true,
           getPosition: (d) => d.position,
           getFillColor: (d) => colorForScore(d.score),
-          getElevation: (d) => d.score * 9,
-          opacity: 0.8,
+          getElevation: (d) => d.score * 22,
+          opacity: 0.92,
           material: false,
           pickable: true,
         }),
