@@ -6,8 +6,6 @@ export default function Header() {
         left: 28,
         top: 28,
         maxWidth: 380,
-        fontFamily: 'system-ui, sans-serif',
-        color: '#e8e9ee',
         pointerEvents: 'none',
         zIndex: 5,
       }}

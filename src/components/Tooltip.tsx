@@ -25,7 +25,6 @@ export default function Tooltip({ cell, x, y }: Props) {
         border: '1px solid rgba(255, 255, 255, 0.09)',
         borderRadius: 8,
         color: '#e8e9ee',
-        fontFamily: 'system-ui, sans-serif',
         pointerEvents: 'none',
         opacity: cell ? 1 : 0,
         transition: 'opacity 180ms ease',

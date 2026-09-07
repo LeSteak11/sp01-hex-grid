@@ -9,8 +9,6 @@ export default function Legend() {
         position: 'fixed',
         left: 28,
         bottom: 28,
-        fontFamily: 'system-ui, sans-serif',
-        color: '#e8e9ee',
         pointerEvents: 'none',
         zIndex: 5,
       }}

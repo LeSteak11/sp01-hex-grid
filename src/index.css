@@ -1,10 +1,13 @@
 :root {
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  color-scheme: dark;
-}
+  --font: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --ink: #e8e9ee;
+  --canvas: #08090c;
 
-* {
-  box-sizing: border-box;
+  font-family: var(--font);
+  color: var(--ink);
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 html,
@@ -15,5 +18,5 @@ body,
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background: #08090c;
+  background: var(--canvas);
 }
