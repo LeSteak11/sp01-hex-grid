@@ -8,6 +8,7 @@ import { buildGrid, type HexCell } from '../lib/grid';
 import Tooltip from './Tooltip';
 import { colorForScore } from '../lib/color';
 import Legend from './Legend';
+import Header from './Header';
 
 const KEY = import.meta.env.VITE_MAPTILER_KEY;
 const STYLE = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${KEY}`;
@@ -147,6 +148,7 @@ export default function MapView() {
   return (
     <>
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      <Header />
       <Legend />
       <Tooltip cell={hover.cell} x={hover.x} y={hover.y} />
     </>
