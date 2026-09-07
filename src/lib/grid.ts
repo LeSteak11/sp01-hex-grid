@@ -75,6 +75,26 @@ export function buildGrid(
       score: scoreCounts(counts, parkArea),
     });
   }
+  const pct = (arr: number[], p: number) => {
+    const s = [...arr].sort((a, b) => a - b);
+    return s[Math.floor((s.length - 1) * p)];
+  };
+
+  const grocery = cells.map((c) => c.counts.grocery);
+  const parkArea = cells.map((c) => c.parkArea);
+  const transit = cells.map((c) => c.counts.transit);
+  const scores = cells.map((c) => c.score);
+
+  console.log('cells:', cells.length);
+  console.log('grocery  p50', pct(grocery, 0.5), 'p90', pct(grocery, 0.9), 'max', Math.max(...grocery));
+  console.log('parkArea p50', pct(parkArea, 0.5), 'p90', pct(parkArea, 0.9), 'max', Math.max(...parkArea));
+  console.log('transit  p50', pct(transit, 0.5), 'p90', pct(transit, 0.9), 'max', Math.max(...transit));
+  console.log(
+    'score    mean', (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1),
+    'min', Math.min(...scores).toFixed(0),
+    'max', Math.max(...scores).toFixed(0),
+    'maxed%', ((scores.filter((s) => s >= 99.5).length / scores.length) * 100).toFixed(1)
+  );
 
   return cells;
 }

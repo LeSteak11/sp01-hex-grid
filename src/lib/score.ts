@@ -4,8 +4,8 @@ export type Counts = Record<Category, number>;
 
 const SATURATION = {
   grocery: 20,
-  parkArea: 2_000_000,
-  transit: 130,
+  parkArea: 400_000,
+  transit: 145,
 };
 
 export function scoreCounts(counts: Counts, parkArea: number): number {
