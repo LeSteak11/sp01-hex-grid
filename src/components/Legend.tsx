@@ -1,6 +1,7 @@
-import { COLOR_RANGE, toCss } from '../lib/color';
+import { RAMP_CSS } from '../lib/color';
+import { type as t, ink } from '../lib/type';
 
-const STEP = 100 / COLOR_RANGE.length;
+const TICKS = [0, 25, 50, 75, 100];
 
 export default function Legend() {
   return (
@@ -8,38 +9,30 @@ export default function Legend() {
       style={{
         position: 'fixed',
         left: 28,
-        bottom: 28,
+        bottom: 44,
+        width: 264,
         pointerEvents: 'none',
         zIndex: 5,
       }}
     >
-      <div
-        style={{
-          fontSize: 10,
-          letterSpacing: '0.09em',
-          textTransform: 'uppercase',
-          opacity: 0.45,
-          marginBottom: 8,
-        }}
-      >
+      <div style={{ ...t.label, opacity: ink.tertiary, marginBottom: 10 }}>
         Access score
       </div>
 
-      <div style={{ display: 'flex' }}>
-        {COLOR_RANGE.map((rgb, i) => (
-          <div key={i} style={{ width: 44 }}>
-            <div style={{ height: 8, background: toCss(rgb) }} />
-            <div
-              style={{
-                fontSize: 11,
-                marginTop: 6,
-                opacity: 0.6,
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {Math.round(i * STEP)}
-            </div>
-          </div>
+      <div style={{ height: 6, borderRadius: 3, background: RAMP_CSS }} />
+
+      <div
+        style={{
+          ...t.micro,
+          marginTop: 7,
+          opacity: ink.quiet,
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {TICKS.map((n) => (
+          <span key={n}>{n}</span>
         ))}
       </div>
     </div>

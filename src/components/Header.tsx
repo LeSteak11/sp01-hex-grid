@@ -1,3 +1,5 @@
+import { type as t, ink } from '../lib/type';
+
 export default function Header() {
   return (
     <div
@@ -10,53 +12,31 @@ export default function Header() {
         zIndex: 5,
       }}
     >
-      <div
-        style={{
-          fontSize: 10,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          opacity: 0.4,
-        }}
-      >
+      <div style={{ ...t.label, letterSpacing: '0.14em', opacity: ink.tertiary }}>
         San Francisco
       </div>
 
-      <h1
-        style={{
-          margin: '6px 0 0',
-          fontSize: 30,
-          fontWeight: 600,
-          letterSpacing: '-0.025em',
-          lineHeight: 1.05,
-        }}
-      >
+      <h1 style={{ ...t.display, margin: '8px 0 0' }}>
         Within Walking Distance
       </h1>
 
-      <p
-        style={{
-          margin: '10px 0 0',
-          fontSize: 13,
-          lineHeight: 1.5,
-          opacity: 0.62,
-        }}
-      >
+      <p style={{ ...t.body, margin: '12px 0 0', opacity: ink.secondary }}>
         What every block in San Francisco can reach on foot: groceries,
         parks, and transit, scored 0 to 100.
       </p>
 
       <p
         style={{
-          margin: '14px 0 0',
-          fontSize: 11,
-          lineHeight: 1.55,
-          opacity: 0.36,
+          ...t.micro,
+          margin: '16px 0 0',
+          opacity: ink.quiet,
           borderLeft: '1px solid rgba(255,255,255,0.13)',
           paddingLeft: 10,
         }}
       >
-        Counts amenities within a 1200m <strong style={{ fontWeight: 500 }}>straight-line</strong> radius —
-        not a walking route. San Francisco's hills are not accounted for.
+        200m hex grid. Counts amenities within a 1200m{' '}
+        <strong style={{ fontWeight: 500 }}>straight-line</strong> radius — not a
+        walking route. San Francisco's hills are not accounted for.
       </p>
     </div>
   );
