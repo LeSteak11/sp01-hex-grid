@@ -46,6 +46,12 @@ A map of **San Francisco** that scores how accessible **groceries, parks, and tr
 
 **Explicitly out of scope** (the Later list): network-based isochrones, real-time transit, multi-city support, user accounts, mobile-native app.
 
+**Later list (deferred, revisit before ship):**
+- Clip the grid to the SF city boundary — the bbox is a rectangle, so Marin and bay cells currently render
+- Elevation reads nearly flat at default zoom; either commit harder to height or reconsider extrusion
+- Basemap labels (Daly City, Brisbane) compete with the data for attention — dim them in the MapLibre style
+- Add rail/tram/ferry to the transit category; currently bus stops only
+
 ---
 
 ## 4. Tech stack
@@ -100,10 +106,10 @@ Non-negotiable aesthetic targets:
 | 0 | Scaffold Vite + React-TS, install maplibre-gl / deck.gl / turf | ✅ Done |
 | 1 | Purge boilerplate, full-screen dark MapLibre basemap w/ MapTiler key in `.env` | ✅ Done |
 | 2 | Fetch OSM amenities via Overpass, save static GeoJSON to `/public/data` | ✅ Done |
-| 3 | Render raw amenity points with a deck.gl ScatterplotLayer (sanity check the data) | ▶ Next |
-| 4 | Swap to `HexagonLayer` — 3D extruded hex aggregation | ⬜ |
-| 5 | Scoring logic — combine grocery/park/transit counts within 1200m into one 0–100 score | ⬜ |
-| 6 | Color ramp + elevation driven by score; art-direct the glow | ⬜ |
+| 3 | Render raw amenity points with a deck.gl ScatterplotLayer (sanity check the data) | ✅ Done |
+| 4 | Swap to `HexagonLayer` — 3D extruded hex aggregation | ✅ Done |
+| 5 | Scoring logic — combine grocery/park/transit counts within 1200m into one 0–100 score | ✅ Done |
+| 6 | Color ramp + elevation driven by score; art-direct the glow | ▶ Next |
 | 7 | Interaction — hover tooltip, category toggles, legend, radius slider | ⬜ |
 | 8 | Polish + performance + deploy free + write the case study | ⬜ |
 
@@ -113,13 +119,19 @@ Non-negotiable aesthetic targets:
 
 For each hex centroid, count amenities within **1200m**, by category:
 
-- **Groceries** — OSM `shop=supermarket`, `shop=grocery`, `shop=convenience`
-- **Parks** — OSM `leisure=park`, `leisure=garden`
-- **Transit** — OSM `public_transport=station`, `highway=bus_stop`, `railway=tram_stop`
+- **Groceries** — OSM `shop=supermarket`, `shop=grocery`, `shop=convenience` (476 points)
+- **Parks** — OSM `leisure=park`, `leisure=garden` (2,044 points)
+- **Transit** — OSM `highway=bus_stop` (3,375 points)
 
-Each category count is normalized against the city's 90th percentile (clamped to 0–1), then averaged with equal weight and scaled to 0–100.
+Each category count is divided by a fixed **saturation cap**, clamped to 0–1, then averaged with equal weight and scaled to 0–100.
 
-Rationale for the 90th-percentile cap: a handful of downtown hexes with 40 bus stops would otherwise flatten the entire rest of the city to near-zero. Capping preserves visible variation across neighborhoods.
+**Calibrated caps (locked):** grocery 20, park 40, transit 130.
+
+Saturation caps replaced the original 90th-percentile plan. Percentile normalization is *relative* — it scores a hex against the rest of the bounding box, so results shift if the box changes and cross-city comparison is meaningless. Fixed caps are *absolute* and encode diminishing returns: your third grocery within walking distance matters, your twentieth does not. Same logic Walk Score uses.
+
+Caps were calibrated against the real distribution (1,827 cells): grocery p50=5 p90=32, park p50=12 p90=70, transit p50=78 p90=164. Chosen set yields mean 45, spread 2–97, with 9% of cells maxed.
+
+Implementation lives in `src/lib/grid.ts` (equirectangular projection to local meters, squared-distance radius test, overlapping neighborhoods) and `src/lib/score.ts` (caps + averaging). Rendered with `ColumnLayer`, not `HexagonLayer` — the grid is computed in app code, not by deck.gl.
 
 ---
 
