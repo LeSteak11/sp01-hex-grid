@@ -1,12 +1,16 @@
 import { type as t, ink } from '../lib/type';
+import { useNarrow } from '../hooks/useNarrow';
 
 export default function Header() {
+  const narrow = useNarrow();
+
   return (
     <div
       style={{
         position: 'fixed',
-        left: 28,
-        top: 28,
+        left: narrow ? 16 : 28,
+        top: narrow ? 16 : 28,
+        right: narrow ? 16 : undefined,
         maxWidth: 380,
         pointerEvents: 'none',
         zIndex: 5,
@@ -16,7 +20,7 @@ export default function Header() {
         San Francisco
       </div>
 
-      <h1 style={{ ...t.display, margin: '8px 0 0' }}>
+      <h1 style={{ ...t.display, fontSize: narrow ? 26 : 34, margin: '8px 0 0' }}>
         Within Walking Distance
       </h1>
 

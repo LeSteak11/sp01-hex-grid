@@ -1,15 +1,18 @@
 import { useState } from 'react';
+import { useNarrow } from '../hooks/useNarrow';
 
 export default function About() {
   const [open, setOpen] = useState(false);
+    const narrow = useNarrow();
 
   return (
     <div
       style={{
         position: 'fixed',
-        right: 28,
-        bottom: 28,
-        width: 300,
+        right: narrow ? 16 : 28,
+        left: narrow ? 16 : undefined,
+        bottom: narrow ? 20 : 28,
+        width: narrow ? undefined : 300,
         zIndex: 6,
         textAlign: 'right',
       }}

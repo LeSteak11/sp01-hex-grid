@@ -1,16 +1,19 @@
 import { RAMP_CSS } from '../lib/color';
 import { type as t, ink } from '../lib/type';
+import { useNarrow } from '../hooks/useNarrow';
 
 const TICKS = [0, 25, 50, 75, 100];
-
 export default function Legend() {
+  const narrow = useNarrow();
+
   return (
     <div
       style={{
         position: 'fixed',
-        left: 28,
-        bottom: 44,
-        width: 264,
+        left: narrow ? 16 : 28,
+        bottom: narrow ? 68 : 44,
+        width: narrow ? 'calc(100vw - 32px)' : 264,
+        maxWidth: 264,
         pointerEvents: 'none',
         zIndex: 5,
       }}
